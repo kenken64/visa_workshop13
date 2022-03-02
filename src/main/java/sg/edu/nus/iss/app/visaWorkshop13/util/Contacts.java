@@ -24,15 +24,33 @@ public class Contacts {
     public void saveContact(Contact contact, Model model, 
             ApplicationArguments applnArgs){
         String dataFilename = contact.getId();
-        Set<String> optnames = applnArgs.getOptionNames();
-        String[] optnamesArr = optnames.toArray(new String[optnames.size()]);
-        List<String> optValues = applnArgs.getOptionValues(optnamesArr[0]);
-        String[] optValuesArr = optValues.toArray(new String[optValues.size()]);
         PrintWriter printWriter = null;
         FileWriter fileWriter = null;
+        String dataDirPath = "/home/kenneth/data";
+        String[] optValuesArr = null;
         try{
+            if(applnArgs != null){
+                Set<String> optnames = applnArgs.getOptionNames();
+                if(optnames !=null && optnames.size() > 0){
+                    String[] optnamesArr = optnames.toArray(new String[optnames.size()]);
+                    if(optnamesArr != null && optnamesArr.length > 0){
+                        List<String> optValues = applnArgs.getOptionValues(optnamesArr[0]);
+                        if(optValues != null && optValues.size() > 0){
+                            optValuesArr = optValues.toArray(new String[optValues.size()]);
+                        }
+                    }  
+                }
+            }
+           
+            if(optValuesArr != null){
+                dataDirPath = optValuesArr[0];
+                logger.log(Level.INFO, " optValuesArr[0] >>> " + optValuesArr[0]);
+                logger.log(Level.INFO, " dataDirPath>>> " + dataDirPath);
+                
+            }
+            
             fileWriter 
-                = new FileWriter(optValuesArr[0] + "/" + dataFilename
+                = new FileWriter(dataDirPath + "/" + dataFilename
                     , Charset.forName("UTF-8"));
             printWriter = new PrintWriter(fileWriter);
             printWriter.println(contact.getName());
@@ -41,9 +59,11 @@ public class Contacts {
         }catch(IOException e){
             logger.log(Level.WARNING, e.getMessage());
         }finally{
-            printWriter.close();
+            if(printWriter != null)
+                printWriter.close();
             try {
-                fileWriter.close();
+                if(fileWriter != null)
+                    fileWriter.close();
             }catch(IOException e){
                 logger.log(Level.WARNING, e.getMessage());
             }   

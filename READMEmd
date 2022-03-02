@@ -1,0 +1,7 @@
+## Workshop 13
+
+1. Run the app
+
+```
+mvn spring-boot:run -Dspring-boot.run.arguments=--dataDir=/Users/kennethphang/data
+```
